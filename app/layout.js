@@ -22,8 +22,6 @@ export default function RootLayout({ children }) {
           <ConvexClientProvider>
             <Header />
             <main className="min-h-screen">
-              
-
               {children}
             </main>
           </ConvexClientProvider>
