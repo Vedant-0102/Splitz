@@ -1,1 +1,2 @@
 # Splitz
+Splitwise app
