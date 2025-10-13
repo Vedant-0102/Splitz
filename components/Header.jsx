@@ -8,7 +8,6 @@ import { SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { useStoreUser } from "@/hooks/use-store-user";
 import { BarLoader } from "react-spinners";
 import { Authenticated, Unauthenticated } from "convex/react";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 export default function Header() {
@@ -19,13 +18,7 @@ export default function Header() {
     <header className="fixed top-0 w-full border-b bg-white/95 backdrop-blur z-50 supports-[backdrop-filter]:bg-white/60">
       <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <Image
-            src={"/logos/logo.png"}
-            alt="Vehiql Logo"
-            width={200}
-            height={60}
-            className="h-11 w-auto object-contain"
-          />
+          <span className="text-2xl font-bold text-green-600">Splitzz</span>
         </Link>
 
         {path === "/" && (
