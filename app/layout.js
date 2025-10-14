@@ -2,7 +2,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ConvexClientProvider } from "@/components/convex-client-provider";
-import Header from "@/components/Header";
+import Header from "@/components/header";
 import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });

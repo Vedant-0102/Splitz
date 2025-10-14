@@ -21,6 +21,8 @@ export default function Dashboard() {
   const { data: balances, isLoading: balancesLoading } = useConvexQuery(
     api.dashboard.getUserBalances
   );
+  
+  console.log("Dashboard - Balances data:", balances);
 
   const { data: groups, isLoading: groupsLoading } = useConvexQuery(
     api.dashboard.getUserGroups
@@ -34,7 +36,10 @@ export default function Dashboard() {
     useConvexQuery(api.dashboard.getMonthlySpending);
 
   const isLoading =
-    balancesLoading ||  groupsLoading ||  totalSpentLoading ||  monthlySpendingLoading;
+    balancesLoading ||
+    groupsLoading ||
+    totalSpentLoading ||
+    monthlySpendingLoading;
 
   return (
     <div className="container mx-auto py-6 space-y-6">

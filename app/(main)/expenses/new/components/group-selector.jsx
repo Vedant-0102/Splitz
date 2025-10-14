@@ -16,12 +16,13 @@ import {
 export function GroupSelector({ onChange }) {
   const [selectedGroupId, setSelectedGroupId] = useState("");
 
-  
+  // Single query to get all data we need
   const { data, isLoading } = useConvexQuery(
     api.groups.getGroupOrMembers,
     selectedGroupId ? { groupId: selectedGroupId } : {}
   );
-  
+
+  // When group data changes, notify parent
   useEffect(() => {
     if (data?.selectedGroup && onChange) {
       onChange(data.selectedGroup);

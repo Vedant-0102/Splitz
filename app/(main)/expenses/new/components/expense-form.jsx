@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
 import { getAllCategories } from "@/lib/expense-categories";
 
-
+// Form schema validation
 const expenseSchema = z.object({
   description: z.string().min(1, "Description is required"),
   amount: z
@@ -48,13 +48,13 @@ export function ExpenseForm({ type = "individual", onSuccess }) {
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [splits, setSplits] = useState([]);
 
-
+  // Mutations and queries
   const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
 
   const createExpense = useConvexMutation(api.expenses.createExpense);
   const categories = getAllCategories();
 
-
+  // Set up form with validation
   const {
     register,
     handleSubmit,
@@ -75,14 +75,14 @@ export function ExpenseForm({ type = "individual", onSuccess }) {
     },
   });
 
-  
+  // Watch for changes
   const amountValue = watch("amount");
   const paidByUserId = watch("paidByUserId");
 
-  
+  // When a user is added or removed, update the participant list
   useEffect(() => {
     if (participants.length === 0 && currentUser) {
-  
+      // Always add the current user as a participant
       setParticipants([
         {
           id: currentUser._id,
@@ -94,19 +94,19 @@ export function ExpenseForm({ type = "individual", onSuccess }) {
     }
   }, [currentUser, participants]);
 
-  
+  // Handle form submission
   const onSubmit = async (data) => {
     try {
       const amount = parseFloat(data.amount);
 
-  
+      // Prepare splits in the format expected by the API
       const formattedSplits = splits.map((split) => ({
         userId: split.userId,
         amount: split.amount,
         paid: split.userId === data.paidByUserId,
       }));
 
-  
+      // Validate that splits add up to the total (with small tolerance)
       const totalSplitAmount = formattedSplits.reduce(
         (sum, split) => sum + split.amount,
         0
@@ -120,7 +120,7 @@ export function ExpenseForm({ type = "individual", onSuccess }) {
         return;
       }
 
-  
+      // For 1:1 expenses, set groupId to undefined instead of empty string
       const groupId = type === "individual" ? undefined : data.groupId;
 
       // Create the expense
@@ -128,7 +128,7 @@ export function ExpenseForm({ type = "individual", onSuccess }) {
         description: data.description,
         amount: amount,
         category: data.category || "Other",
-        date: data.date.getTime(), 
+        date: data.date.getTime(), // Convert to timestamp
         paidByUserId: data.paidByUserId,
         splitType: data.splitType,
         splits: formattedSplits,
@@ -136,7 +136,7 @@ export function ExpenseForm({ type = "individual", onSuccess }) {
       });
 
       toast.success("Expense created successfully!");
-      reset(); 
+      reset(); // Reset form
 
       const otherParticipant = participants.find(
         (p) => p.id !== currentUser._id
@@ -241,14 +241,14 @@ export function ExpenseForm({ type = "individual", onSuccess }) {
             <Label>Group</Label>
             <GroupSelector
               onChange={(group) => {
-                
+                // Only update if the group has changed to prevent loops
                 if (!selectedGroup || selectedGroup.id !== group.id) {
                   setSelectedGroup(group);
                   setValue("groupId", group.id);
 
-                  
+                  // Update participants with the group members
                   if (group.members && Array.isArray(group.members)) {
-                  
+                    // Set the participants once, don't re-set if they're the same
                     setParticipants(group.members);
                   }
                 }
@@ -320,7 +320,7 @@ export function ExpenseForm({ type = "individual", onSuccess }) {
                 amount={parseFloat(amountValue) || 0}
                 participants={participants}
                 paidByUserId={paidByUserId}
-                onSplitsChange={setSplits} 
+                onSplitsChange={setSplits} // Use setSplits directly
               />
             </TabsContent>
             <TabsContent value="percentage" className="pt-4">
@@ -332,7 +332,7 @@ export function ExpenseForm({ type = "individual", onSuccess }) {
                 amount={parseFloat(amountValue) || 0}
                 participants={participants}
                 paidByUserId={paidByUserId}
-                onSplitsChange={setSplits} 
+                onSplitsChange={setSplits} // Use setSplits directly
               />
             </TabsContent>
             <TabsContent value="exact" className="pt-4">
@@ -344,7 +344,7 @@ export function ExpenseForm({ type = "individual", onSuccess }) {
                 amount={parseFloat(amountValue) || 0}
                 participants={participants}
                 paidByUserId={paidByUserId}
-                onSplitsChange={setSplits} 
+                onSplitsChange={setSplits} // Use setSplits directly
               />
             </TabsContent>
           </Tabs>

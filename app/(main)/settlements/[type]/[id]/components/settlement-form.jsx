@@ -14,7 +14,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 
-// Form 
+// Form schema validation
 const settlementSchema = z.object({
   amount: z
     .string()
@@ -30,7 +30,7 @@ export default function SettlementForm({ entityType, entityData, onSuccess }) {
   const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
   const createSettlement = useConvexMutation(api.settlements.createSettlement);
 
-  
+  // Set up form with validation
   const {
     register,
     handleSubmit,
@@ -45,14 +45,15 @@ export default function SettlementForm({ entityType, entityData, onSuccess }) {
     },
   });
 
-  // select payment 
+  // Get selected payment direction
   const paymentType = watch("paymentType");
 
-  
+  // Single user settlement
   const handleUserSettlement = async (data) => {
     const amount = parseFloat(data.amount);
 
-    try {      
+    try {
+      // Determine payer and receiver based on the selected payment type
       const paidByUserId =
         data.paymentType === "youPaid"
           ? currentUser._id
@@ -67,7 +68,8 @@ export default function SettlementForm({ entityType, entityData, onSuccess }) {
         amount,
         note: data.note,
         paidByUserId,
-        receivedByUserId,        
+        receivedByUserId,
+        // No groupId for user settlements
       });
 
       toast.success("Settlement recorded successfully!");
@@ -86,7 +88,8 @@ export default function SettlementForm({ entityType, entityData, onSuccess }) {
 
     const amount = parseFloat(data.amount);
 
-    try {      
+    try {
+      // Get the selected user from the group balances
       const selectedUser = entityData.balances.find(
         (balance) => balance.userId === selectedUserId
       );
@@ -95,7 +98,8 @@ export default function SettlementForm({ entityType, entityData, onSuccess }) {
         toast.error("Selected user not found in group");
         return;
       }
-      
+
+      // Determine payer and receiver based on the selected payment type and balances
       const paidByUserId =
         data.paymentType === "youPaid" ? currentUser._id : selectedUser.userId;
 
@@ -116,7 +120,8 @@ export default function SettlementForm({ entityType, entityData, onSuccess }) {
       toast.error("Failed to record settlement: " + error.message);
     }
   };
-  
+
+  // Handle form submission
   const onSubmit = async (data) => {
     if (entityType === "user") {
       await handleUserSettlement(data);
@@ -124,11 +129,13 @@ export default function SettlementForm({ entityType, entityData, onSuccess }) {
       await handleGroupSettlement(data, selectedGroupMemberId);
     }
   };
-  
+
+  // For group settlements, we need to select a member
   const [selectedGroupMemberId, setSelectedGroupMemberId] = useState(null);
 
   if (!currentUser) return null;
 
+  // Render the form for individual settlement
   if (entityType === "user") {
     const otherUser = entityData.counterpart;
     const netBalance = entityData.netBalance;
@@ -168,7 +175,8 @@ export default function SettlementForm({ entityType, entityData, onSuccess }) {
             defaultValue="youPaid"
             {...register("paymentType")}
             className="flex flex-col space-y-2"
-            onValueChange={(value) => {              
+            onValueChange={(value) => {
+              // This manual approach is needed because RadioGroup doesn't work directly with react-hook-form
               register("paymentType").onChange({
                 target: { name: "paymentType", value },
               });
@@ -240,7 +248,8 @@ export default function SettlementForm({ entityType, entityData, onSuccess }) {
       </form>
     );
   }
-  
+
+  // Render form for group settlement
   if (entityType === "group") {
     const groupMembers = entityData.balances;
 
@@ -252,8 +261,8 @@ export default function SettlementForm({ entityType, entityData, onSuccess }) {
           <div className="space-y-2">
             {groupMembers.map((member) => {
               const isSelected = selectedGroupMemberId === member.userId;
-              const isOwing = member.netBalance < 0; 
-              const isOwed = member.netBalance > 0;
+              const isOwing = member.netBalance > 0; // positive means they owe you
+              const isOwed = member.netBalance < 0; // negative means you owe them
 
               return (
                 <div

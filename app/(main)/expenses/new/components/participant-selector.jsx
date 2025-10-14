@@ -27,19 +27,20 @@ export function ParticipantSelector({ participants, onParticipantsChange }) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Search users
+  // Search for users
   const { data: searchResults, isLoading } = useConvexQuery(
     api.users.searchUsers,
     { query: searchQuery }
   );
 
-  // Add a user
+  // Add a participant
   const addParticipant = (user) => {
-    // Check if user already added
+    // Check if already added
     if (participants.some((p) => p.id === user.id)) {
       return;
     }
-    
+
+    // Add to list
     onParticipantsChange([...participants, user]);
     setOpen(false);
     setSearchQuery("");
