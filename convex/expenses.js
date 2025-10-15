@@ -9,7 +9,7 @@ export const createExpense = mutation({
     category: v.optional(v.string()),
     date: v.number(), 
     paidByUserId: v.id("users"),
-    splitType: v.string(), // equal percentage exact
+    splitType: v.string(), 
     splits: v.array(
       v.object({
         userId: v.id("users"),
