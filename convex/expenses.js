@@ -20,9 +20,8 @@ export const createExpense = mutation({
     groupId: v.optional(v.id("groups")),
   },
   handler: async (ctx, args) => {
-    
     const user = await ctx.runQuery(internal.users.getCurrentUser);
-    
+
     if (args.groupId) {
       const group = await ctx.db.get(args.groupId);
       if (!group) {
@@ -36,7 +35,7 @@ export const createExpense = mutation({
         throw new Error("You are not a member of this group");
       }
     }
-    
+
     const totalSplitAmount = args.splits.reduce(
       (sum, split) => sum + split.amount,
       0
@@ -46,6 +45,7 @@ export const createExpense = mutation({
       throw new Error("Split amounts must add up to the total expense amount");
     }
 
+    // Create the expense
     const expenseId = await ctx.db.insert("expenses", {
       description: args.description,
       amount: args.amount,
@@ -67,8 +67,6 @@ export const getExpensesBetweenUsers = query({
   handler: async (ctx, { userId }) => {
     const me = await ctx.runQuery(internal.users.getCurrentUser);
     if (me._id === userId) throw new Error("Cannot query yourself");
-
-     //One-on-one expenses where user is the payer 
 
     const myPaid = await ctx.db
       .query("expenses")
@@ -119,7 +117,6 @@ export const getExpensesBetweenUsers = query({
 
     settlements.sort((a, b) => b.date - a.date);
 
-    //balance
     let balance = 0;
 
     for (const e of expenses) {
@@ -161,7 +158,7 @@ export const deleteExpense = mutation({
     expenseId: v.id("expenses"),
   },
   handler: async (ctx, args) => {
-    // Get the current user
+`    // Get the current user`
     const user = await ctx.runQuery(internal.users.getCurrentUser);
 
     // Get the expense
@@ -177,6 +174,8 @@ export const deleteExpense = mutation({
     }
 
     // Delete any settlements that specifically reference this expense
+    // Since we can't use array.includes directly in the filter, we'll
+    // fetch all settlements and then filter in memory
     const allSettlements = await ctx.db.query("settlements").collect();
 
     const relatedSettlements = allSettlements.filter(
@@ -186,7 +185,6 @@ export const deleteExpense = mutation({
     );
 
     for (const settlement of relatedSettlements) {
-
       const updatedRelatedExpenseIds = settlement.relatedExpenseIds.filter(
         (id) => id !== args.expenseId
       );
@@ -202,7 +200,7 @@ export const deleteExpense = mutation({
       }
     }
 
-    // Delete 
+    // Delete the expense
     await ctx.db.delete(args.expenseId);
 
     return { success: true };

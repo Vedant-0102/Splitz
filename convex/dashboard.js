@@ -4,9 +4,8 @@ import { internal } from "./_generated/api";
 // Get user balances
 export const getUserBalances = query({
   handler: async (ctx) => {
-    
     const user = await ctx.runQuery(internal.users.getCurrentUser);
-    
+
     const expenses = (await ctx.db.query("expenses").collect()).filter(
       (e) =>
         !e.groupId && // 1‑to‑1 only
@@ -35,7 +34,6 @@ export const getUserBalances = query({
       }
     }
 
-    
     const settlements = (await ctx.db.query("settlements").collect()).filter(
       (s) =>
         !s.groupId &&
@@ -81,29 +79,29 @@ export const getUserBalances = query({
   },
 });
 
-// total spent in the current year
+// Get total spent in the current year
 export const getTotalSpent = query({
   handler: async (ctx) => {
     const user = await ctx.runQuery(internal.users.getCurrentUser);
 
-    // start of current year
+    // Get start of current year timestamp
     const currentYear = new Date().getFullYear();
     const startOfYear = new Date(currentYear, 0, 1).getTime();
 
-    //all expenses for the current year
+    // Get all expenses for the current year
     const expenses = await ctx.db
       .query("expenses")
       .withIndex("by_date", (q) => q.gte("date", startOfYear))
       .collect();
 
-    // Filter for expenses for user
+    // Filter for expenses where user is involved
     const userExpenses = expenses.filter(
       (expense) =>
         expense.paidByUserId === user._id ||
         expense.splits.some((split) => split.userId === user._id)
     );
 
-    // Calculate user spendings
+    // Calculate total spent (personal share only)
     let totalSpent = 0;
 
     userExpenses.forEach((expense) => {
@@ -169,13 +167,12 @@ export const getMonthlySpending = query({
       }
     });
 
-    // Convert to array format
     const result = Object.entries(monthlyTotals).map(([month, total]) => ({
       month: parseInt(month),
       total,
     }));
 
-    // Sort by month (ascending)
+    // Sort by month ascending
     result.sort((a, b) => a.month - b.month);
 
     return result;

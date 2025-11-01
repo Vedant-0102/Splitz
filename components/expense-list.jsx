@@ -31,7 +31,7 @@ export function ExpenseList({
       </Card>
     );
   }
-  
+
   const getUserDetails = (userId) => {
 
     return {
@@ -44,7 +44,6 @@ export function ExpenseList({
     };
   };
 
-
   const canDeleteExpense = (expense) => {
     if (!currentUser) return false;
     return (
@@ -53,8 +52,8 @@ export function ExpenseList({
     );
   };
 
-  // delete expense
-  const handleDeleteExpense = async (expense) => {    
+  // Handle delete expense
+  const handleDeleteExpense = async (expense) => {
     const confirmed = window.confirm(
       "Are you sure you want to delete this expense? This action cannot be undone."
     );

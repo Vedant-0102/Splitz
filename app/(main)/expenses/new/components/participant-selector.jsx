@@ -27,11 +27,17 @@ export function ParticipantSelector({ participants, onParticipantsChange }) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Search for users
+  // Get suggested users when search is empty
+  const { data: suggestedUsers } = useConvexQuery(api.users.getSuggestedUsers);
+  
+  // Search for users when user types
   const { data: searchResults, isLoading } = useConvexQuery(
     api.users.searchUsers,
-    { query: searchQuery }
+    searchQuery.length >= 2 ? { query: searchQuery } : "skip"
   );
+
+  // Use search results if available, otherwise show suggested users
+  const displayUsers = searchQuery.length >= 2 ? searchResults : suggestedUsers;
 
   // Add a participant
   const addParticipant = (user) => {
@@ -110,11 +116,7 @@ export function ParticipantSelector({ participants, onParticipantsChange }) {
                 />
                 <CommandList>
                   <CommandEmpty>
-                    {searchQuery.length < 2 ? (
-                      <p className="py-3 px-4 text-sm text-center text-muted-foreground">
-                        Type at least 2 characters to search
-                      </p>
-                    ) : isLoading ? (
+                    {isLoading ? (
                       <p className="py-3 px-4 text-sm text-center text-muted-foreground">
                         Searching...
                       </p>
@@ -124,8 +126,8 @@ export function ParticipantSelector({ participants, onParticipantsChange }) {
                       </p>
                     )}
                   </CommandEmpty>
-                  <CommandGroup heading="Users">
-                    {searchResults?.map((user) => (
+                  <CommandGroup heading={searchQuery.length >= 2 ? "Search Results" : "Suggested Users"}>
+                    {displayUsers?.map((user) => (
                       <CommandItem
                         key={user.id}
                         value={user.name + user.email}

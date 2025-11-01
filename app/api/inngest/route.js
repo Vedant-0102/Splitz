@@ -1,13 +1,8 @@
 import { serve } from "inngest/next";
 import { inngest } from "@/lib/inngest/client";
-import { paymentReminders } from "@/lib/inngest/payment-reminders";
-import { spendingInsights } from "@/lib/inngest/spending-insights";
+import { helloWorld } from "@/lib/inngest/functions"; 
 
 export const { GET, POST, PUT } = serve({
   client: inngest,
-  functions: [
-    
-    spendingInsights,
-    paymentReminders,
-  ],
+  functions: [helloWorld],
 });

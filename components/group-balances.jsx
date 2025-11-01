@@ -5,21 +5,9 @@ import { api } from "@/convex/_generated/api";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ArrowUpCircle, ArrowDownCircle } from "lucide-react";
 
-/**
- * Expected `balances` shape (one object per member):
- * {
- *   id:           string;           // user id
- *   name:         string;
- *   imageUrl?:    string;
- *   totalBalance: number;           // + ve ⇒ they are owed, – ve ⇒ they owe
- *   owes:   { to: string;   amount: number }[];  // this member → others
- *   owedBy: { from: string; amount: number }[];  // others → this member
- * }
- */
 export function GroupBalances({ balances }) {
   const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
 
-  /* ───── guards ────────────────────────────────────────────────────────── */
   if (!balances?.length || !currentUser) {
     return (
       <div className="text-center py-4 text-muted-foreground">
@@ -39,12 +27,12 @@ export function GroupBalances({ balances }) {
 
   const userMap = Object.fromEntries(balances.map((b) => [b.id, b]));
 
-  // Who owes me
+  // Who owes me?
   const owedByMembers = me.owedBy
     .map(({ from, amount }) => ({ ...userMap[from], amount }))
     .sort((a, b) => b.amount - a.amount);
 
-  // Who I owe
+  // Whom do I owe?
   const owingToMembers = me.owes
     .map(({ to, amount }) => ({ ...userMap[to], amount }))
     .sort((a, b) => b.amount - a.amount);
@@ -54,6 +42,7 @@ export function GroupBalances({ balances }) {
     owedByMembers.length === 0 &&
     owingToMembers.length === 0;
 
+  
   return (
     <div className="space-y-4">
       {/* Current user's total balance */}

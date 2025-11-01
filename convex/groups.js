@@ -9,13 +9,11 @@ export const getGroupOrMembers = query({
   handler: async (ctx, args) => {
     const currentUser = await ctx.runQuery(internal.users.getCurrentUser);
 
-    // Get all groups where the user is a member
     const allGroups = await ctx.db.query("groups").collect();
     const userGroups = allGroups.filter((group) =>
       group.members.some((member) => member.userId === currentUser._id)
     );
 
-    // If a specific group ID is provided return details for that group only 
     if (args.groupId) {
       const selectedGroup = userGroups.find(
         (group) => group._id === args.groupId
@@ -99,8 +97,10 @@ export const getGroupExpenses = query({
       })
     );
     const ids = memberDetails.map((m) => m.id);
-    
-    const totals = Object.fromEntries(ids.map((id) => [id, 0]));    
+
+
+    const totals = Object.fromEntries(ids.map((id) => [id, 0]));
+   
     const ledger = {};
     ids.forEach((a) => {
       ledger[a] = {};
@@ -112,14 +112,14 @@ export const getGroupExpenses = query({
     for (const exp of expenses) {
       const payer = exp.paidByUserId;
       for (const split of exp.splits) {
-        if (split.userId === payer || split.paid) continue; 
+        if (split.userId === payer || split.paid) continue;
         const debtor = split.userId;
         const amt = split.amount;
 
         totals[payer] += amt;
         totals[debtor] -= amt;
 
-        ledger[debtor][payer] += amt; // debt owes payed
+        ledger[debtor][payer] += amt; 
       }
     }
 
@@ -127,7 +127,7 @@ export const getGroupExpenses = query({
       totals[s.paidByUserId] += s.amount;
       totals[s.receivedByUserId] -= s.amount;
 
-      ledger[s.paidByUserId][s.receivedByUserId] -= s.amount; // they paid back
+      ledger[s.paidByUserId][s.receivedByUserId] -= s.amount; 
     }
 
     ids.forEach((a) => {
