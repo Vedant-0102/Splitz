@@ -6,15 +6,9 @@ export const getUsersWithOutstandingDebts = query({
     const users = await ctx.db.query("users").collect();
     const result = [];
 
-    const expenses = await ctx.db
-      .query("expenses")
-      .filter((q) => q.eq(q.field("groupId"), undefined))
-      .collect();
+    const expenses = await ctx.db.query("expenses").collect();
 
-    const settlements = await ctx.db
-      .query("settlements")
-      .filter((q) => q.eq(q.field("groupId"), undefined))
-      .collect();
+    const settlements = await ctx.db.query("settlements").collect();
 
     const userCache = new Map();
     const getUser = async (id) => {
@@ -56,6 +50,7 @@ export const getUsersWithOutstandingDebts = query({
       }
 
       for (const st of settlements) {
+        
         if (st.paidByUserId === user._id) {
           const entry = ledger.get(st.receivedByUserId);
           if (entry) {
@@ -148,7 +143,6 @@ export const getUsersWithExpenses = query({
 export const getUserMonthlyExpenses = query({
   args: { userId: v.id("users") },
   handler: async (ctx, args) => {
-
     const now = new Date();
     const oneMonthAgo = new Date(now);
     oneMonthAgo.setMonth(now.getMonth() - 1);
