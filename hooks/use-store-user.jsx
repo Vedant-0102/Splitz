@@ -7,25 +7,34 @@ import { api } from "../convex/_generated/api";
 export function useStoreUser() {
   const { isLoading, isAuthenticated } = useConvexAuth();
   const { user } = useUser();
-
-
   const [userId, setUserId] = useState(null);
   const storeUser = useMutation(api.users.store);
   
   useEffect(() => {
-
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !user) {
       return;
     }
 
-    async function createUser() {
-      const id = await storeUser();
-      setUserId(id);
-    }
-    createUser();
-    return () => setUserId(null);
+    let isMounted = true;
 
-  }, [isAuthenticated, storeUser, user?.id]);
+    async function createUser() {
+      try {
+        const id = await storeUser();
+        if (isMounted) {
+          setUserId(id);
+        }
+      } catch (error) {
+        console.error("Error storing user:", error);
+      }
+    }
+    
+    createUser();
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [isAuthenticated, user?.id]);
+
   return {
     isLoading: isLoading || (isAuthenticated && userId === null),
     isAuthenticated: isAuthenticated && userId !== null,

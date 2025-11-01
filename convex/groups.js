@@ -1,10 +1,10 @@
-import { query } from "./_generated/server";
+import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 import { internal } from "./_generated/api";
 
 export const getGroupOrMembers = query({
   args: {
-    groupId: v.optional(v.id("groups")), 
+    groupId: v.optional(v.id("groups")),
   },
   handler: async (ctx, args) => {
     const currentUser = await ctx.runQuery(internal.users.getCurrentUser);
@@ -69,6 +69,112 @@ export const getGroupOrMembers = query({
   },
 });
 
+export const getAvailableUsersForGroup = query({
+  args: {
+    groupId: v.id("groups"),
+  },
+  handler: async (ctx, { groupId }) => {
+    const currentUser = await ctx.runQuery(internal.users.getCurrentUser);
+    const group = await ctx.db.get(groupId);
+
+    if (!group) throw new Error("Group not found");
+
+    const isAdmin = group.members.some(
+      (m) => m.userId === currentUser._id && m.role === "admin"
+    );
+
+    if (!isAdmin) throw new Error("Only admins can view available users");
+
+    const allUsers = await ctx.db.query("users").collect();
+
+    // Filter out users who are already members
+    const availableUsers = allUsers.filter(
+      (user) => !group.members.some((m) => m.userId === user._id)
+    );
+
+    return availableUsers.map((user) => ({
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      imageUrl: user.imageUrl,
+    }));
+  },
+});
+
+export const addGroupMember = mutation({
+  args: {
+    groupId: v.id("groups"),
+    userId: v.id("users"),
+  },
+  handler: async (ctx, { groupId, userId }) => {
+    const currentUser = await ctx.runQuery(internal.users.getCurrentUser);
+    const group = await ctx.db.get(groupId);
+
+    if (!group) throw new Error("Group not found");
+
+    const isAdmin = group.members.some(
+      (m) => m.userId === currentUser._id && m.role === "admin"
+    );
+
+    if (!isAdmin) throw new Error("Only admins can add members");
+
+    const userToAdd = await ctx.db.get(userId);
+
+    if (!userToAdd) throw new Error("User not found");
+
+    if (group.members.some((m) => m.userId === userToAdd._id)) {
+      throw new Error("User is already a member");
+    }
+
+    await ctx.db.patch(groupId, {
+      members: [
+        ...group.members,
+        {
+          userId: userToAdd._id,
+          role: "member",
+          joinedAt: Date.now(),
+        },
+      ],
+    });
+
+    return { success: true };
+  },
+});
+
+export const removeGroupMember = mutation({
+  args: {
+    groupId: v.id("groups"),
+    userId: v.id("users"),
+  },
+  handler: async (ctx, { groupId, userId }) => {
+    const currentUser = await ctx.runQuery(internal.users.getCurrentUser);
+    const group = await ctx.db.get(groupId);
+
+    if (!group) throw new Error("Group not found");
+
+    const isAdmin = group.members.some(
+      (m) => m.userId === currentUser._id && m.role === "admin"
+    );
+
+    if (!isAdmin) throw new Error("Only admins can remove members");
+
+    if (userId === currentUser._id) {
+      throw new Error("You cannot remove yourself");
+    }
+
+    const memberToRemove = group.members.find((m) => m.userId === userId);
+    if (memberToRemove?.role === "admin") {
+      throw new Error("Cannot remove admin members");
+    }
+
+    await ctx.db.patch(groupId, {
+      members: group.members.filter((m) => m.userId !== userId),
+    });
+
+    return { success: true };
+  },
+});
+
 export const getGroupExpenses = query({
   args: { groupId: v.id("groups") },
   handler: async (ctx, { groupId }) => {
@@ -79,6 +185,10 @@ export const getGroupExpenses = query({
 
     if (!group.members.some((m) => m.userId === currentUser._id))
       throw new Error("You are not a member of this group");
+
+    const isAdmin = group.members.some(
+      (m) => m.userId === currentUser._id && m.role === "admin"
+    );
 
     const expenses = await ctx.db
       .query("expenses")
@@ -100,7 +210,7 @@ export const getGroupExpenses = query({
 
 
     const totals = Object.fromEntries(ids.map((id) => [id, 0]));
-   
+
     const ledger = {};
     ids.forEach((a) => {
       ledger[a] = {};
@@ -119,7 +229,7 @@ export const getGroupExpenses = query({
         totals[payer] += amt;
         totals[debtor] -= amt;
 
-        ledger[debtor][payer] += amt; 
+        ledger[debtor][payer] += amt;
       }
     }
 
@@ -127,12 +237,12 @@ export const getGroupExpenses = query({
       totals[s.paidByUserId] += s.amount;
       totals[s.receivedByUserId] -= s.amount;
 
-      ledger[s.paidByUserId][s.receivedByUserId] -= s.amount; 
+      ledger[s.paidByUserId][s.receivedByUserId] -= s.amount;
     }
 
     ids.forEach((a) => {
       ids.forEach((b) => {
-        if (a >= b) return; 
+        if (a >= b) return;
         const diff = ledger[a][b] - ledger[b][a];
         if (diff > 0) {
           ledger[a][b] = diff;
@@ -167,12 +277,15 @@ export const getGroupExpenses = query({
         id: group._id,
         name: group.name,
         description: group.description,
+        createdBy: group.createdBy,
       },
       members: memberDetails,
       expenses,
       settlements,
       balances,
       userLookupMap,
+      isAdmin,
+      currentUserId: currentUser._id,
     };
   },
 });

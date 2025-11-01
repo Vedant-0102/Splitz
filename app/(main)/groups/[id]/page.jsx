@@ -102,7 +102,11 @@ export default function GroupExpensesPage() {
               <CardTitle className="text-xl">Members</CardTitle>
             </CardHeader>
             <CardContent>
-              <GroupMembers members={members} />
+              <GroupMembers 
+                members={members} 
+                groupId={params.id}
+                isAdmin={data?.isAdmin}
+              />
             </CardContent>
           </Card>
         </div>

@@ -25,6 +25,7 @@ import {
 import { cn } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
 import { getAllCategories } from "@/lib/expense-categories";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // Form schema validation
 const expenseSchema = z.object({
@@ -237,29 +238,78 @@ export function ExpenseForm({ type = "individual", onSuccess }) {
 
         {/* Group selector (for group expenses) */}
         {type === "group" && (
-          <div className="space-y-2">
-            <Label>Group</Label>
-            <GroupSelector
-              onChange={(group) => {
-                // Only update if the group has changed to prevent loops
-                if (!selectedGroup || selectedGroup.id !== group.id) {
-                  setSelectedGroup(group);
-                  setValue("groupId", group.id);
+          <>
+            <div className="space-y-2">
+              <Label>Group</Label>
+              <GroupSelector
+                onChange={(group) => {
+                  // Only update if the group has changed to prevent loops
+                  if (!selectedGroup || selectedGroup.id !== group.id) {
+                    setSelectedGroup(group);
+                    setValue("groupId", group.id);
 
-                  // Update participants with the group members
-                  if (group.members && Array.isArray(group.members)) {
-                    // Set the participants once, don't re-set if they're the same
-                    setParticipants(group.members);
+                    // Update participants with the group members
+                    if (group.members && Array.isArray(group.members)) {
+                      // Set the participants once, don't re-set if they're the same
+                      setParticipants(group.members);
+                    }
                   }
-                }
-              }}
-            />
-            {!selectedGroup && (
-              <p className="text-xs text-amber-600">
-                Please select a group to continue
-              </p>
+                }}
+              />
+              {!selectedGroup && (
+                <p className="text-xs text-amber-600">
+                  Please select a group to continue
+                </p>
+              )}
+            </div>
+
+            {/* Member selector for group expenses */}
+            {selectedGroup && (
+              <div className="space-y-2">
+                <Label>Involved Members</Label>
+                <div className="border rounded-md p-3 space-y-2">
+                  <p className="text-xs text-muted-foreground mb-2">
+                    Select which members are involved in this expense
+                  </p>
+                  {selectedGroup.members.map((member) => (
+                    <label
+                      key={member.id}
+                      className="flex items-center gap-3 cursor-pointer hover:bg-muted/50 p-2 rounded transition-colors"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={participants.some((p) => p.id === member.id)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setParticipants([...participants, member]);
+                          } else {
+                            setParticipants(
+                              participants.filter((p) => p.id !== member.id)
+                            );
+                          }
+                        }}
+                        className="h-4 w-4"
+                      />
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={member.imageUrl} />
+                        <AvatarFallback>
+                          {member.name?.charAt(0) || "?"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="text-sm font-medium">
+                        {member.id === currentUser._id ? "You" : member.name}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+                {participants.length <= 1 && (
+                  <p className="text-xs text-amber-600">
+                    Please select at least one other member
+                  </p>
+                )}
+              </div>
             )}
-          </div>
+          </>
         )}
 
         {/* Participants (for individual expenses) */}
