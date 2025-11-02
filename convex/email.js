@@ -2,7 +2,6 @@ import { v } from "convex/values";
 import { action } from "./_generated/server";
 import { Resend } from "resend";
 
-// Action to send email using Resend
 export const sendEmail = action({
   args: {
     to: v.string(),
@@ -16,7 +15,7 @@ export const sendEmail = action({
 
     try {
       const result = await resend.emails.send({
-        from: "Splitr <onboarding@resend.dev>",
+        from: "Splitz <onboarding@resend.dev>",
         to: args.to,
         subject: args.subject,
         html: args.html,

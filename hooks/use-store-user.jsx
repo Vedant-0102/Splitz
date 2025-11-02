@@ -9,17 +9,32 @@ export function useStoreUser() {
   const { user } = useUser();
   const [userId, setUserId] = useState(null);
   const storeUser = useMutation(api.users.store);
+  
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !user) {
       return;
     }
+
+    let isMounted = true;
+
     async function createUser() {
-      const id = await storeUser();
-      setUserId(id);
+      try {
+        const id = await storeUser();
+        if (isMounted) {
+          setUserId(id);
+        }
+      } catch (error) {
+        console.error("Error storing user:", error);
+      }
     }
+    
     createUser();
-    return () => setUserId(null);
-  }, [isAuthenticated, storeUser, user?.id]);
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [isAuthenticated, user?.id]);
+
   return {
     isLoading: isLoading || (isAuthenticated && userId === null),
     isAuthenticated: isAuthenticated && userId !== null,

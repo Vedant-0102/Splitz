@@ -21,8 +21,6 @@ export default function Dashboard() {
   const { data: balances, isLoading: balancesLoading } = useConvexQuery(
     api.dashboard.getUserBalances
   );
-  
-  console.log("Dashboard - Balances data:", balances);
 
   const { data: groups, isLoading: groupsLoading } = useConvexQuery(
     api.dashboard.getUserGroups

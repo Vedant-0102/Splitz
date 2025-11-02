@@ -26,8 +26,9 @@ export function SettlementList({
       </Card>
     );
   }
-  
-  const getUserDetails = (userId) => {    
+
+  const getUserDetails = (userId) => {
+
     return {
       name:
         userId === currentUser?._id

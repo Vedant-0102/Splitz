@@ -47,18 +47,10 @@ export function CreateGroupModal({ isOpen, onClose, onSuccess }) {
 
   const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
   const createGroup = useConvexMutation(api.contacts.createGroup);
-  
-  // Get suggested users when search is empty
-  const { data: suggestedUsers } = useConvexQuery(api.users.getSuggestedUsers);
-  
-  // Get search results when user types
   const { data: searchResults, isLoading: isSearching } = useConvexQuery(
     api.users.searchUsers,
-    searchQuery.length >= 2 ? { query: searchQuery } : "skip"
+    { query: searchQuery }
   );
-
-  // Use search results if available, otherwise show suggested users
-  const displayUsers = searchQuery.length >= 2 ? searchResults : suggestedUsers;
 
   const {
     register,
@@ -208,7 +200,11 @@ export function CreateGroupModal({ isOpen, onClose, onSuccess }) {
                     />
                     <CommandList>
                       <CommandEmpty>
-                        {isSearching ? (
+                        {searchQuery.length < 2 ? (
+                          <p className="py-3 px-4 text-sm text-center text-muted-foreground">
+                            Type at least 2 characters to search
+                          </p>
+                        ) : isSearching ? (
                           <p className="py-3 px-4 text-sm text-center text-muted-foreground">
                             Searching...
                           </p>
@@ -218,8 +214,8 @@ export function CreateGroupModal({ isOpen, onClose, onSuccess }) {
                           </p>
                         )}
                       </CommandEmpty>
-                      <CommandGroup heading={searchQuery.length >= 2 ? "Search Results" : "Suggested Users"}>
-                        {displayUsers?.map((user) => (
+                      <CommandGroup heading="Users">
+                        {searchResults?.map((user) => (
                           <CommandItem
                             key={user.id}
                             value={user.name + user.email}

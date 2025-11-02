@@ -1,3 +1,4 @@
+// convex/contacts.js
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 import { internal } from "./_generated/api";
@@ -5,6 +6,7 @@ import { internal } from "./_generated/api";
 
 export const getAllContacts = query({
   handler: async (ctx) => {
+    
     const currentUser = await ctx.runQuery(internal.users.getCurrentUser);
 
     const expensesYouPaid = await ctx.db
@@ -52,7 +54,6 @@ export const getAllContacts = query({
       })
     );
 
-    //groups where current user is a member
     const userGroups = (await ctx.db.query("groups").collect())
       .filter((g) => g.members.some((m) => m.userId === currentUser._id))
       .map((g) => ({
@@ -70,7 +71,6 @@ export const getAllContacts = query({
   },
 });
 
-//create a new group   
 export const createGroup = mutation({
   args: {
     name: v.string(),
@@ -78,7 +78,6 @@ export const createGroup = mutation({
     members: v.array(v.id("users")),
   },
   handler: async (ctx, args) => {
-    
     const currentUser = await ctx.runQuery(internal.users.getCurrentUser);
 
     if (!args.name.trim()) throw new Error("Group name cannot be empty");

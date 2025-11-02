@@ -8,7 +8,6 @@ export const useConvexQuery = (query, ...args) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Use effect to handle the state changes based on the query result
   useEffect(() => {
     if (result === undefined) {
       setIsLoading(true);

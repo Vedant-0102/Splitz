@@ -11,6 +11,8 @@ import { getCategoryIcon } from "@/lib/expense-categories";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { DeleteExpenseModal } from "@/components/delete-expense-modal";
+import { useState } from "react";
 
 export function ExpenseList({
   expenses,
@@ -21,6 +23,7 @@ export function ExpenseList({
 }) {
   const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
   const deleteExpense = useConvexMutation(api.expenses.deleteExpense);
+  const [expenseToDelete, setExpenseToDelete] = useState(null);
 
   if (!expenses || !expenses.length) {
     return (
@@ -31,7 +34,7 @@ export function ExpenseList({
       </Card>
     );
   }
-  
+
   const getUserDetails = (userId) => {
 
     return {
@@ -44,7 +47,6 @@ export function ExpenseList({
     };
   };
 
-
   const canDeleteExpense = (expense) => {
     if (!currentUser) return false;
     return (
@@ -53,16 +55,12 @@ export function ExpenseList({
     );
   };
 
-  // delete expense
-  const handleDeleteExpense = async (expense) => {    
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this expense? This action cannot be undone."
-    );
-
-    if (!confirmed) return;
+  // Handle delete expense
+  const handleDeleteExpense = async () => {
+    if (!expenseToDelete) return;
 
     try {
-      await deleteExpense.mutate({ expenseId: expense._id });
+      await deleteExpense.mutate({ expenseId: expenseToDelete._id });
       toast.success("Expense deleted successfully");
     } catch (error) {
       toast.error("Failed to delete expense: " + error.message);
@@ -136,7 +134,7 @@ export function ExpenseList({
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8 rounded-full text-red-500 hover:text-red-700 hover:bg-red-100"
-                      onClick={() => handleDeleteExpense(expense)}
+                      onClick={() => setExpenseToDelete(expense)}
                     >
                       <Trash2 className="h-4 w-4" />
                       <span className="sr-only">Delete expense</span>
@@ -184,6 +182,13 @@ export function ExpenseList({
           </Card>
         );
       })}
+
+      <DeleteExpenseModal
+        isOpen={!!expenseToDelete}
+        onClose={() => setExpenseToDelete(null)}
+        onConfirm={handleDeleteExpense}
+        expense={expenseToDelete}
+      />
     </div>
   );
 }
