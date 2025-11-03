@@ -71,7 +71,7 @@ export default function Header() {
             </SignInButton>
 
             <SignUpButton>
-              <Button className="bg-green-600 hover:bg-green-700 border-none">
+              <Button>
                 Get Started
               </Button>
             </SignUpButton>

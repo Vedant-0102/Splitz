@@ -37,87 +37,87 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: 0px;
-  --radius-md: 0px;
-  --radius-lg: 0px;
-  --radius-xl: 0px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
 }
 
 :root {
-  --radius: 0px;
-  --shadow-brutal: 4px 4px 0px #000;
-  --shadow-brutal-lg: 6px 6px 0px #000;
-  --shadow-brutal-sm: 2px 2px 0px #000;
+  --radius: 8px;
+  --shadow-brutal: 4px 4px 0px rgba(0, 0, 0, 0.1);
+  --shadow-brutal-lg: 6px 6px 0px rgba(0, 0, 0, 0.1);
+  --shadow-brutal-sm: 2px 2px 0px rgba(0, 0, 0, 0.1);
 
-  --card: #fff;
-  --card-foreground: #000;
-  --popover: #fff;
-  --popover-foreground: #000;
-  --primary: #000;
-  --primary-foreground: #fff;
+  --card: #faf9f7;
+  --card-foreground: #3d3d3d;
+  --popover: #faf9f7;
+  --popover-foreground: #3d3d3d;
+  --primary: #fbbf24;
+  --primary-foreground: #1f2937;
   --secondary: #fbbf24;
-  --secondary-foreground: #000;
-  --muted: #e5e5e5;
-  --muted-foreground: #525252;
-  --accent: #a78bfa;
-  --accent-foreground: #000;
-  --destructive: #ef4444;
-  --border: #000;
-  --input: #000;
-  --ring: #000;
-  --chart-1: #fbbf24;
-  --chart-2: #a78bfa;
-  --chart-3: #34d399;
-  --chart-4: #f472b6;
-  --chart-5: #60a5fa;
-  --sidebar: #fff;
-  --sidebar-foreground: #000;
-  --sidebar-primary: #000;
+  --secondary-foreground: #1f2937;
+  --muted: #f0ede8;
+  --muted-foreground: #6b6b6b;
+  --accent: #b89d7a;
+  --accent-foreground: #3d3d3d;
+  --destructive: #c96a6a;
+  --border: rgba(139, 111, 71, 0.2);
+  --input: rgba(139, 111, 71, 0.15);
+  --ring: rgba(139, 111, 71, 0.3);
+  --chart-1: #d4a574;
+  --chart-2: #b89d7a;
+  --chart-3: #a88b6f;
+  --chart-4: #c9a785;
+  --chart-5: #9d8260;
+  --sidebar: #faf9f7;
+  --sidebar-foreground: #3d3d3d;
+  --sidebar-primary: #8b6f47;
   --sidebar-primary-foreground: #fff;
-  --sidebar-accent: #fbbf24;
-  --sidebar-accent-foreground: #000;
-  --sidebar-border: #000;
-  --sidebar-ring: #000;
-  --background: #f5f5f4;
-  --foreground: #000;
+  --sidebar-accent: #d4a574;
+  --sidebar-accent-foreground: #3d3d3d;
+  --sidebar-border: rgba(139, 111, 71, 0.2);
+  --sidebar-ring: rgba(139, 111, 71, 0.3);
+  --background: #f5f3f0;
+  --foreground: #3d3d3d;
 }
 
 .dark {
-  --shadow-brutal: 4px 4px 0px #fff;
-  --shadow-brutal-lg: 6px 6px 0px #fff;
-  --shadow-brutal-sm: 2px 2px 0px #fff;
+  --shadow-brutal: 4px 4px 0px rgba(255, 255, 255, 0.1);
+  --shadow-brutal-lg: 6px 6px 0px rgba(255, 255, 255, 0.1);
+  --shadow-brutal-sm: 2px 2px 0px rgba(255, 255, 255, 0.1);
 
-  --background: #1c1917;
-  --foreground: #fff;
-  --card: #292524;
-  --card-foreground: #fff;
-  --popover: #292524;
-  --popover-foreground: #fff;
-  --primary: #fff;
-  --primary-foreground: #000;
-  --secondary: #fbbf24;
-  --secondary-foreground: #000;
-  --muted: #44403c;
-  --muted-foreground: #d6d3d1;
-  --accent: #a78bfa;
-  --accent-foreground: #000;
-  --destructive: #ef4444;
-  --border: #fff;
-  --input: #fff;
-  --ring: #fff;
-  --chart-1: #fbbf24;
-  --chart-2: #a78bfa;
-  --chart-3: #34d399;
-  --chart-4: #f472b6;
-  --chart-5: #60a5fa;
-  --sidebar: #292524;
-  --sidebar-foreground: #fff;
-  --sidebar-primary: #fff;
-  --sidebar-primary-foreground: #000;
-  --sidebar-accent: #fbbf24;
-  --sidebar-accent-foreground: #000;
-  --sidebar-border: #fff;
-  --sidebar-ring: #fff;
+  --background: #2a2520;
+  --foreground: #e8e3dd;
+  --card: #332e28;
+  --card-foreground: #e8e3dd;
+  --popover: #332e28;
+  --popover-foreground: #e8e3dd;
+  --primary: #fbbf24;
+  --primary-foreground: #1f2937;
+  --secondary: #8b6f47;
+  --secondary-foreground: #e8e3dd;
+  --muted: #3d3832;
+  --muted-foreground: #b8b3ad;
+  --accent: #b89d7a;
+  --accent-foreground: #e8e3dd;
+  --destructive: #c96a6a;
+  --border: rgba(212, 165, 116, 0.2);
+  --input: rgba(212, 165, 116, 0.15);
+  --ring: rgba(212, 165, 116, 0.3);
+  --chart-1: #d4a574;
+  --chart-2: #b89d7a;
+  --chart-3: #a88b6f;
+  --chart-4: #c9a785;
+  --chart-5: #9d8260;
+  --sidebar: #332e28;
+  --sidebar-foreground: #e8e3dd;
+  --sidebar-primary: #d4a574;
+  --sidebar-primary-foreground: #2a2520;
+  --sidebar-accent: #8b6f47;
+  --sidebar-accent-foreground: #e8e3dd;
+  --sidebar-border: rgba(212, 165, 116, 0.2);
+  --sidebar-ring: rgba(212, 165, 116, 0.3);
 }
 
 @layer base {
@@ -126,6 +126,27 @@
   }
   body {
     @apply bg-background text-foreground;
+    position: relative;
+  }
+  
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 20% 50%, rgba(212, 165, 116, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(184, 157, 122, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 40% 20%, rgba(139, 111, 71, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  main, [role="main"] {
+    position: relative;
+    z-index: 1;
   }
 }
 
@@ -147,4 +168,111 @@
 
 @utility brutal-shadow-sm {
   box-shadow: var(--shadow-brutal-sm);
+}
+
+/* Paper texture utility */
+@utility paper-texture {
+  background-image: 
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      rgba(139, 111, 71, 0.02) 10px,
+      rgba(139, 111, 71, 0.02) 20px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 10px,
+      rgba(139, 111, 71, 0.02) 10px,
+      rgba(139, 111, 71, 0.02) 20px
+    );
+}
+
+/* Soft paper shadow */
+@utility paper-shadow {
+  box-shadow: 
+    0 2px 8px rgba(139, 111, 71, 0.1),
+    0 1px 3px rgba(139, 111, 71, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+@utility paper-shadow-lg {
+  box-shadow: 
+    0 4px 16px rgba(139, 111, 71, 0.12),
+    0 2px 6px rgba(139, 111, 71, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+@layer utilities {
+  .hover\:paper-shadow-lg:hover {
+    box-shadow: 
+      0 4px 16px rgba(139, 111, 71, 0.12),
+      0 2px 6px rgba(139, 111, 71, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+  
+  .focus-visible\:paper-shadow-lg:focus-visible {
+    box-shadow: 
+      0 4px 16px rgba(139, 111, 71, 0.12),
+      0 2px 6px rgba(139, 111, 71, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+  
+  /* Glaze hover effect */
+  .glaze-hover {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .glaze-hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.4),
+      transparent
+    );
+    transition: left 0.5s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .glaze-hover:hover::before {
+    left: 100%;
+  }
+  
+  .glaze-hover::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.25) 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      transparent 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .glaze-hover:hover::after {
+    opacity: 1;
+  }
+  
+  /* Ensure button content appears above glaze effects */
+  .glaze-hover > * {
+    position: relative;
+    z-index: 2;
+  }
 }

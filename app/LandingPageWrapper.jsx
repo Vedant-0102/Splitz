@@ -33,7 +33,6 @@ export default function LandingPageWrapper() {
               <Button
                 asChild
                 size="lg"
-                className="bg-green-600 hover:bg-green-700"
               >
                 <Link href="/dashboard">
                   Get Started
@@ -122,7 +121,7 @@ export default function LandingPageWrapper() {
               Join thousands of users who have made splitting expenses
               stress‑free.
             </p>
-            <Button asChild size="lg" className="bg-green-800 hover:opacity-90">
+            <Button asChild size="lg">
               <Link href="/dashboard">
                 Get Started
                 <ArrowRight className="ml-2 h-4 w-4" />

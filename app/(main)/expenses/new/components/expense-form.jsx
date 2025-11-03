@@ -10,6 +10,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import { ParticipantSelector } from "./participant-selector";
 import { GroupSelector } from "./group-selector";
@@ -331,17 +338,33 @@ export function ExpenseForm({ type = "individual", onSuccess }) {
         {/* Paid by selector */}
         <div className="space-y-2">
           <Label>Paid by</Label>
-          <select
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-            {...register("paidByUserId")}
+          <Select
+            value={paidByUserId || ""}
+            onValueChange={(value) => setValue("paidByUserId", value)}
           >
-            <option value="">Select who paid</option>
-            {participants.map((participant) => (
-              <option key={participant.id} value={participant.id}>
-                {participant.id === currentUser._id ? "You" : participant.name}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select who paid" />
+            </SelectTrigger>
+            <SelectContent>
+              {participants.map((participant) => (
+                <SelectItem key={participant.id} value={participant.id}>
+                  <div className="flex items-center gap-2">
+                    {participant.imageUrl && (
+                      <Avatar className="h-5 w-5">
+                        <AvatarImage src={participant.imageUrl} />
+                        <AvatarFallback>
+                          {participant.name?.charAt(0) || "?"}
+                        </AvatarFallback>
+                      </Avatar>
+                    )}
+                    <span>
+                      {participant.id === currentUser?._id ? "You" : participant.name}
+                    </span>
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           {errors.paidByUserId && (
             <p className="text-sm text-red-500">
               {errors.paidByUserId.message}

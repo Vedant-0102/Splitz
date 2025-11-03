@@ -58,8 +58,8 @@ export function GroupSelector({ onChange }) {
                 <div className="bg-primary/10 p-1 rounded-full">
                   <Users className="h-3 w-3 text-primary" />
                 </div>
-                <span>{group.name}</span>
-                <span className="text-xs text-muted-foreground">
+                <span className="font-medium">{group.name}</span>
+                <span className="text-xs text-gray-600">
                   ({group.memberCount} members)
                 </span>
               </div>
