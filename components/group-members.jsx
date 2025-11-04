@@ -132,13 +132,14 @@ export function GroupMembers({ members, groupId, isAdmin }) {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
-            <div className="flex items-center gap-2 border rounded-md px-3 py-2">
-              <Search className="h-4 w-4 text-muted-foreground" />
-              <Input
+            <div className="flex items-center gap-3 border-2 border-gray-300 rounded-full bg-white px-4 h-10 paper-shadow">
+              <Search className="h-4 w-4 text-gray-500 flex-shrink-0" />
+              <input
+                type="text"
                 placeholder="Search by name or email..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="border-0 p-0 focus-visible:ring-0"
+                className="flex-1 bg-transparent border-0 outline-none text-sm text-gray-900 placeholder:text-gray-400"
               />
             </div>
             
