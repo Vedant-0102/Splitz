@@ -4,10 +4,15 @@ import React from "react";
 import { Button } from "./ui/button";
 import { LayoutDashboard } from "lucide-react";
 import Link from "next/link";
-import { SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+import {
+  SignInButton,
+  SignUpButton,
+  UserButton,
+  SignedIn,
+  SignedOut,
+} from "@clerk/nextjs";
 import { useStoreUser } from "@/hooks/use-store-user";
 import { BarLoader } from "react-spinners";
-import { Authenticated, Unauthenticated } from "convex/react";
 import { usePathname } from "next/navigation";
 
 export default function Header() {
@@ -39,7 +44,7 @@ export default function Header() {
         )}
 
         <div className="flex items-center gap-4">
-          <Authenticated>
+          <SignedIn>
             <Link href="/dashboard">
               <Button
                 variant="outline"
@@ -63,19 +68,17 @@ export default function Header() {
               }}
               afterSignOutUrl="/"
             />
-          </Authenticated>
+          </SignedIn>
 
-          <Unauthenticated>
-            <SignInButton>
+          <SignedOut>
+            <SignInButton fallbackRedirectUrl="/">
               <Button variant="ghost">Sign In</Button>
             </SignInButton>
 
-            <SignUpButton>
-              <Button>
-                Get Started
-              </Button>
+            <SignUpButton fallbackRedirectUrl="/">
+              <Button>Get Started</Button>
             </SignUpButton>
-          </Unauthenticated>
+          </SignedOut>
         </div>
       </nav>
       {isLoading && <BarLoader width={"100%"} color="#36d7b7" />}
